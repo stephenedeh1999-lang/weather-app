@@ -122,6 +122,12 @@
         .loading.show {
             display: block;
         }
+        
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
     </style>
 </head>
 <body>
@@ -143,10 +149,14 @@
         </div>
         
         <div id="errorMessage" class="error"></div>
+        
+        <div class="footer">
+            Built by Edeh Stephen
+        </div>
     </div>
 
     <script>
-        // 🔑 REPLACE WITH YOUR NEW API KEY
+        // 🔑 REPLACE WITH YOUR ACTUAL API KEY FROM OpenWeatherMap
         const API_KEY = "478f991a7843ff7045079737b2c268f0";
         
         async function getWeather() {
@@ -155,6 +165,7 @@
             const errorMessage = document.getElementById('errorMessage');
             const loading = document.getElementById('loading');
             
+            // Clear previous results
             weatherInfo.classList.remove('show');
             errorMessage.textContent = '';
             loading.classList.remove('show');
@@ -164,6 +175,7 @@
                 return;
             }
             
+            // Show loading
             loading.classList.add('show');
             
             try {
@@ -171,14 +183,17 @@
                 const response = await fetch(url);
                 const data = await response.json();
                 
+                // Hide loading
                 loading.classList.remove('show');
                 
                 if (data.cod === 200) {
+                    // Success - display weather
                     const iconCode = data.weather[0].icon;
                     document.getElementById('cityName').textContent = `${data.name}, ${data.sys.country}`;
                     document.getElementById('temperature').textContent = `${Math.round(data.main.temp)}°C`;
                     document.getElementById('description').textContent = data.weather[0].description;
                     document.getElementById('weatherIcon').innerHTML = `<img src="https://openweathermap.org/img/wn/${iconCode}@2x.png" alt="Weather icon" width="80" height="80" />`;
+                    
                     weatherInfo.classList.add('show');
                 } else {
                     errorMessage.textContent = '❌ City not found. Please try again.';
@@ -186,9 +201,11 @@
             } catch (error) {
                 loading.classList.remove('show');
                 errorMessage.textContent = '❌ Something went wrong. Please try again.';
+                console.error('Error:', error);
             }
         }
         
+        // Allow Enter key to search
         document.getElementById('cityInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 getWeather();
@@ -196,4 +213,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
